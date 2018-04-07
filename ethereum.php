@@ -432,9 +432,27 @@ class Ethereum_Transaction
  *	Ethereum message -- Same as a transaction, except using this won't
  *  post the transaction to the blockchain.
  */
-class Ethereum_Message extends Ethereum_Transaction
+class Ethereum_Message
 {
-
+	private $to, $data;
+	
+	function __construct($to, $data)
+	{
+		$this->to = $to;
+		$this->data = $data;
+	}
+	
+	function toArray()
+	{
+		return array(
+			array
+			(
+				'to'=>$this->to,
+				'data'=>$this->data
+			),
+			'latest'
+		);
+	}
 }
 
 /**

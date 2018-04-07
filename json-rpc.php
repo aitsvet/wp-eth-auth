@@ -7,7 +7,7 @@
 class JSON_RPC
 {
 	protected $host, $port, $version;
-	protected $id = 0;
+	protected $id = 1;
 	
 	function __construct($host, $port, $version="2.0")
 	{
@@ -18,11 +18,12 @@ class JSON_RPC
 	
 	function request($method, $params=array())
 	{
-		$data = array();
-		$data['jsonrpc'] = $this->version;
-		$data['id'] = $this->id++;
-		$data['method'] = $method;
-		$data['params'] = $params;
+		$data = array(
+			'jsonrpc' => $this->version,
+		 	'method' => $method,
+			'params' => $params,
+			'id' => $this->id++
+		);
 		
 		$ch = curl_init();
 		
