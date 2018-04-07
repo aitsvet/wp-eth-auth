@@ -1,24 +1,16 @@
 pragma solidity ^0.4.21;
 
-contract TwoFactorAuth {
+contract ECRecoverer {
     
-    event LoginAttempt(
-        address user,
+    event ECRecovery(
         bytes32 hash,
         bytes signature,
-        bool result);
+        address signer);
     
-    function login(address user, bytes32 hash, bytes signature)
-    public returns (bool) {
-        bool result = verify(user, hash, signature);
-        emit LoginAttempt(user, hash, signature, result);
-        return result;
-    }
-    
-    function verify(address user, bytes32 hash, bytes signature)
-    public pure returns (bool) {
+    function recover(bytes32 hash, bytes signature)
+    public returns (address) {
         if (signature.length != 65)
-            return false;
+            return 0;
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 prefixedHash = keccak256(prefix, hash);
         bytes32 r;
@@ -31,7 +23,9 @@ contract TwoFactorAuth {
         }
         if (v < 27)
             v += 27;
-        return ecrecover(prefixedHash, v, r, s) == user;
+        address signer = ecrecover(prefixedHash, v, r, s);
+        emit ECRecovery(hash, signature, signer);
+        return signer;
     }
 
 }
